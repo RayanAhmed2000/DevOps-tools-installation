@@ -1,16 +1,25 @@
+#!/bin/bash
+
+# 1. Update system and install required tools
+sudo apt update && sudo apt install -y fontconfig openjdk-17-jre curl gnupg
+
+# 2. Pull the EXACT keys your system is asking for from the keyserver
+# This includes the specific 7198F4B714ABFC68 key that was causing the error
+sudo gpg --no-default-keyring --keyring /usr/share/keyrings/jenkins-keyring.gpg --keyserver keyserver.ubuntu.com --recv-keys 5BA31D57EF5975CA 7198F4B714ABFC68
+
+# 3. Add the Jenkins repository pointing to the new binary keyring
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.gpg] https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+# 4. Final update and install
 sudo apt update
-sudo apt upgrade -y
+sudo apt install -y jenkins
 
+# 5. Start and enable Jenkins service
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
 
-sudo apt install openjdk-17-jdk -y
-
-java -version
-
-
-curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
-  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
-
-
-echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
-  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
-  /etc/apt/sources.list.d/jenkins.list > /dev/null
+echo "-------------------------------------------------------"
+echo "Jenkins Installation Complete!"
+echo "Initial Admin Password:"
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+echo "-------------------------------------------------------"
