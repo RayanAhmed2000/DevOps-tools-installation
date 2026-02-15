@@ -26,8 +26,9 @@ kubectl version --client
 
 # 3. EKSctl
 echo "Installing EKSctl now..."
-# Downloads the latest amd64 release for Linux
-curl -sL "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+PLATFORM=$(uname -s)_amd64
+# This uses the new official download path
+curl -sL "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_${PLATFORM}.tar.gz" | tar xz -C /tmp
 sudo mv /tmp/eksctl /usr/local/bin
 eksctl version
 
